@@ -1,0 +1,18 @@
+[project]
+name = "projects"
+description = "大模型实战项目代码"
+version = "0.1.0"
+dependencies = [
+    # 添加与项目实战相关的依赖
+    "langchain",
+    "transformers",
+    "torch",
+    "fastapi",  # 用于构建API服务
+    "uvicorn",    # 用于运行FastAPI
+    "streamlit",  # 用于可视化
+    # 更多...
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta:__legacy__"

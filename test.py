@@ -4,8 +4,6 @@ from dotenv import load_dotenv
 # 加载.env文件中的环境变量到os.environ
 load_dotenv()
 
-# 现在可以直接使用 os.environ 获取 .env 中定义的变量
-print(os.environ.get("LANGCHAIN_TRACING_V2"))  # 示例：可以直接访问环境变量
 
 from httpx import Client
 from langchain.agents import initialize_agent, AgentType, Tool, AgentExecutor

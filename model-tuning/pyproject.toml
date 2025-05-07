@@ -1,0 +1,17 @@
+[project]
+name = "model-tuning"
+description = "大模型调优学习代码"
+version = "0.1.0"
+dependencies = [
+    # 添加与大模型调优相关的依赖
+    "transformers",
+    "torch",
+    "accelerate",
+    "deepspeed",
+    "bitsandbytes",
+    # 更多...
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta:__legacy__"

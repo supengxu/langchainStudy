@@ -1,0 +1,16 @@
+[project]
+name = "transformer-theory"
+description = "Transformer模型理论与实现学习代码"
+version = "0.1.0"
+dependencies = [
+    # 添加与Transformer理论相关的依赖
+    "torch",
+    "numpy",
+    "matplotlib",
+    "einops",  # 用于张量操作
+    # 更多...
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta:__legacy__"
