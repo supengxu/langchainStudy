@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta:__legacy__"
+
+[project]
+name = "langchain-stdudy"
+description = "A project using LangChain and other AI tools"
+version = "0.1.0"
+authors = [
+    {name="Your Name", email="your.email@example.com"},
+]
+dependencies = [
+    "langchain",
+    "tavily-python",
+    "python-dotenv",
+    # 添加其他依赖项
+]
+
+[project.urls]
+"Homepage" = "https://example.com"
+"Bug Tracker" = "https://github.com/yourusername/langchain-stdudy/issues"
