@@ -12,7 +12,14 @@ authors = [
 dependencies = [
     "langchain",
     "tavily-python",
-    "python-dotenv",
+    "python-dotenv==1.1.0",
+    "requests==2.32.3",
+    "uvicorn==0.34.2",
+    "fastapi==0.115.2",
+    "transformers==4.48.2",
+    "torch==2.5.1",
+    "sentence-transformers==3.4.1",
+    "streamlit==1.39.0",
     # 添加其他依赖项
 ]
 

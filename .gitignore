@@ -1,0 +1,37 @@
+# .env文件包含敏感信息，不应提交到版本控制
+.env
+
+# Python常见忽略文件
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# 虚拟环境
+venv/
+env/
+.virtualenv/
+
+# IDE特定文件
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 日志文件
+*.log
+
+# node.js
+node_modules/
+dist/
+
+# macOS特定
+.DS_Store
+
+# 文本编辑器自动保存的临时文件
+*~
+
+# Python egg info  # 添加这一行以忽略egg-info目录
+*.egg-info/
