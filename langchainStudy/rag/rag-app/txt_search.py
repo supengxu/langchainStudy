@@ -1,11 +1,14 @@
 #pip install streamlit==1.39.0
 #pip install toml
+import requests
 import streamlit as st
 import tempfile
 import os
 from langchain.memory import ConversationBufferMemory
 from langchain_community.chat_message_histories import StreamlitChatMessageHistory
 from langchain_community.document_loaders import TextLoader
+from langchain_core.tools import tool, Tool
+from langchain_experimental.text_splitter import SemanticChunker
 from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
 from langchain_core.prompts import PromptTemplate
@@ -43,16 +46,25 @@ def configure_retriever(uploaded_files):
         loader = TextLoader(temp_filepath, encoding="utf-8")
         docs.extend(loader.load())
 
-    # 进行文档分割
-    text_splitter = RecursiveCharacterTextSplitter(separators=["\n\n", "\n", "。", "！", "？", "；", "，", " ", ""],chunk_size=500, chunk_overlap=50)
-    splits = text_splitter.split_documents(docs)
-
     # 使用OpenAI的向量模型生成文档的向量表示
     embeddings = embeddingClient()
-    vectordb = Chroma.from_documents(splits, embeddings,persist_directory='./')
+    # 进行文档分割
+    text_splitter = SemanticChunker(
+    embeddings, breakpoint_threshold_type="percentile", breakpoint_threshold_amount=50)
+    splits = text_splitter.split_documents(docs)
 
-    # 创建文档检索器
-    retriever = vectordb.as_retriever()
+    # vectordb = Chroma.from_documents(splits, embeddings,persist_directory='./')
+    print(f"Total documents to insert: {len(splits)}")
+    # 手动分批插入 splits 到 Chroma
+    batch_size = 64
+    vectordb = Chroma(persist_directory='./', embedding_function=embeddings)
+    for i in range(0, len(splits), batch_size):
+        batch = splits[i:i + batch_size]
+        print(f"Adding batch {i // batch_size + 1}, {len(batch)} documents...")
+        vectordb.add_documents(batch)
+    
+    # 创建文档检索器，并限制返回的最大文档数量
+    retriever = vectordb.as_retriever(search_kwargs={"k": 4})
 
     return retriever
 
@@ -71,12 +83,53 @@ for msg in st.session_state.messages:
 from langchain.tools.retriever import create_retriever_tool
 
 # 创建用于文档检索的工具
-tool = create_retriever_tool(
+retriever_tool = create_retriever_tool(
     retriever,
     "文档检索",
     "用于检索用户提出的问题，并基于检索到的文档内容进行回复.",
 )
-tools = [tool]
+@tool
+def get_weather(location):
+    """
+       获取指定位置的实时天气信息。
+
+       参数:
+           location (str): 要查询的城市名称或地理位置字符串。例如："北京"、"Shanghai"、"Tokyo" 等。
+
+       返回:
+           dict: 包含天气描述和温度的字典，格式如下：
+               {
+                   "description": "天气状况（如“晴朗”、“下雨”）",
+                   "temperature": 25  # 当前温度（摄氏度）
+               }
+
+       异常:
+           Exception: 如果请求失败或返回错误状态码，将抛出异常。
+    """
+    api_key = "SKcA5FGgmLvN7faJi"
+    url = f"https://api.seniverse.com/v3/weather/now.json?key={api_key}&location={location}&language=zh-Hans&unit=c"
+    response = requests.get(url)
+    # print(location)
+    if location == None:
+        return "抱歉，我无法获取天气信息。"
+    if response.status_code == 200:
+        data = response.json()
+        # print(data)
+        weather = {
+            'description': data['results'][0]["now"]["text"],
+            'temperature': data['results'][0]["now"]["temperature"]
+        }
+        # MessagesState.
+        return weather
+    else:
+        raise Exception(f"失败接收天气信息：{response.status_code}")
+weather = Tool(
+            name="get_weather",
+            description="根据城市名获取当前天气数据。你需要准备传递给我地点，当你分辨不出地点的时候，帮我生成追问",
+            func=get_weather
+        )
+
+tools = [retriever_tool,weather ]
 
 # 创建聊天消息历史记录
 msgs = StreamlitChatMessageHistory()
