@@ -2,7 +2,6 @@ from typing import Literal
 
 import requests
 from langchain_core.messages import HumanMessage
-from langchain_core.runnables import RunnableConfig
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
 # pip install -U langgraph
@@ -103,14 +102,14 @@ app = workflow.compile(checkpointer=checkpointer)
 # 6.执行图，使用可运行对象
 final_state = app.invoke(
     {"messages": [HumanMessage(content="成都天气怎么样?")]},
-    config={"configurable": {"thread_id": 42}}
+    config=RunnableConfig(configurable={"thread_id": 42})
 )
 # 从 final_state 中获取最后一条消息的内容
 result = final_state["messages"][-1].content
 print(result)
 final_state = app.invoke(
     {"messages": [HumanMessage(content="我问的那个城市?")]},
-    config={"configurable": {"thread_id": 42}}
+    config=RunnableConfig(configurable={"thread_id": 42})
 )
 result = final_state["messages"][-1].content
 print(result)

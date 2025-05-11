@@ -1,5 +1,7 @@
 from langchain_community.tools.tavily_search import TavilySearchResults
 
+from llm_basic.llm_client import llmClient
+
 # 创建TavilySearchResults工具，设置最大结果数为1
 tools = [TavilySearchResults(max_results=1)]
 
@@ -13,9 +15,9 @@ prompt = hub.pull("wfh/react-agent-executor")
 prompt.pretty_print()
 
 # 选择驱动代理的LLM，使用OpenAI的ChatGPT-4o模型
-llm = ChatOpenAI(model="gpt-4o")
+llm = llmClient()
 # 创建一个REACT代理执行器，使用指定的LLM和工具，并应用从Hub中获取的prompt
-agent_executor = create_react_agent(llm, tools, messages_modifier=prompt)
+agent_executor = create_react_agent(llm, tools, prompt=prompt)
 
 # 调用代理执行器，询问“谁是美国公开赛的冠军”
 #agent_executor.invoke({"messages": [("user", "谁是美国公开赛的获胜者")]})

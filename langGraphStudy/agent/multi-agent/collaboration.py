@@ -6,6 +6,7 @@ from langchain_core.messages import (
 )
 # 导入聊天提示模板和消息占位符
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.runnables import RunnableConfig
 # 导入状态图相关的常量和类
 from langgraph.graph import END, StateGraph, START
 
@@ -249,7 +250,7 @@ events = graph.stream(
         ],
     },
     # 图中最多执行的步骤数
-    {"recursion_limit": 150},
+    RunnableConfig(configurable={"thread_id": 42})
 )
 # 打印事件流中的每个状态
 for s in events:
