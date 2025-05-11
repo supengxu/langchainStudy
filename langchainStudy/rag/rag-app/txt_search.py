@@ -13,7 +13,6 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.agents import create_react_agent, AgentExecutor
 from langchain_community.callbacks.streamlit import StreamlitCallbackHandler
 from langchain_openai import ChatOpenAI
-
 from llm_basic.llm_client import llmClient, embeddingClient
 
 # 设置Streamlit应用的页面标题和布局
@@ -45,12 +44,12 @@ def configure_retriever(uploaded_files):
         docs.extend(loader.load())
 
     # 进行文档分割
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=300, chunk_overlap=50)
+    text_splitter = RecursiveCharacterTextSplitter(separators=["\n\n", "\n", "。", "！", "？", "；", "，", " ", ""],chunk_size=500, chunk_overlap=50)
     splits = text_splitter.split_documents(docs)
 
     # 使用OpenAI的向量模型生成文档的向量表示
     embeddings = embeddingClient()
-    vectordb = Chroma.from_documents(splits, embeddings)
+    vectordb = Chroma.from_documents(splits, embeddings,persist_directory='./')
 
     # 创建文档检索器
     retriever = vectordb.as_retriever()
@@ -141,7 +140,7 @@ llm = llmClient()
 
 # 创建react Agent
 agent = create_react_agent(llm, tools, prompt)
-
+print(agent)
 # 创建Agent执行器
 agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=True, handle_parsing_errors=True)
 
