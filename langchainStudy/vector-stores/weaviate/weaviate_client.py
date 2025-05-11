@@ -7,7 +7,7 @@ from langchain_text_splitters import CharacterTextSplitter
 from langchain_weaviate.vectorstores import WeaviateVectorStore
 from weaviate.classes.init import Auth
 
-embeddings = OpenAIEmbeddings()
+embeddings = embeddingClient()
 # 加载文档并将其分割成片段
 loader = TextLoader("../../resource/knowledge.txt", encoding="UTF-8")
 documents = loader.load()

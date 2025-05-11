@@ -6,9 +6,9 @@ from langchain_openai.embeddings import OpenAIEmbeddings
 with open("../../resource/knowledge.txt", encoding="utf-8") as f:
     knowledge = f.read()
 
-text_splitter = SemanticChunker(OpenAIEmbeddings())
+text_splitter = SemanticChunker(embeddingClient())
 text_splitter = SemanticChunker(
-    OpenAIEmbeddings(), breakpoint_threshold_type="percentile", breakpoint_threshold_amount=90
+    embeddingClient(), breakpoint_threshold_type="percentile", breakpoint_threshold_amount=90
 )
 docs = text_splitter.create_documents([knowledge])
 print(docs[0].page_content)

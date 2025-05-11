@@ -13,7 +13,7 @@ docs = loader.load()
 text_splitter = RecursiveCharacterTextSplitter()
 documents = text_splitter.split_documents(docs)
 # 创建embedding
-embeddings = OpenAIEmbeddings()
+embeddings = embeddingClient()
 # 通过向量数据库存储
 vector = FAISS.from_documents(documents, embeddings)
 # 查询检索
@@ -24,7 +24,7 @@ prompt = ChatPromptTemplate.from_template("""仅根据提供的上下文回答�
 </context>
 Question: {input}""")
 # 创建模型
-llm = ChatOpenAI()
+llm = llmClient()
 # 创建 document 的chain 查询
 document_chain = create_stuff_documents_chain(llm, prompt)
 from langchain.chains import create_retrieval_chain

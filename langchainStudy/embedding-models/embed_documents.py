@@ -1,7 +1,7 @@
 #pip install langchain-openai
 
 from langchain_openai import OpenAIEmbeddings
-embeddings_model = OpenAIEmbeddings()
+embeddings_model = embeddingClient()
 
 embeddings = embeddings_model.embed_documents(
     [

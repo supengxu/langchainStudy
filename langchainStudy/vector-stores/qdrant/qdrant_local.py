@@ -9,7 +9,7 @@ loader = TextLoader("../../resource/knowledge.txt", encoding="UTF-8")
 documents = loader.load()
 text_splitter = CharacterTextSplitter(chunk_size=1500, chunk_overlap=0)
 docs = text_splitter.split_documents(documents)
-embeddings = OpenAIEmbeddings()
+embeddings = embeddingClient()
 
 qdrant = Qdrant.from_documents(
     docs,

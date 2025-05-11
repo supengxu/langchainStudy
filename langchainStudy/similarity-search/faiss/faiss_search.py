@@ -12,7 +12,7 @@ loader = TextLoader("../../resource/knowledge.txt", encoding="UTF-8")
 documents = loader.load()
 text_splitter = CharacterTextSplitter(chunk_size=1500, chunk_overlap=0)
 docs = text_splitter.split_documents(documents)
-embeddings = OpenAIEmbeddings()
+embeddings = embeddingClient()
 db = FAISS.from_documents(docs, embeddings)
 #索引数量
 print(db.index.ntotal)

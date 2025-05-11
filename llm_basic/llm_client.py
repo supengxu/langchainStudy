@@ -5,10 +5,11 @@ from httpx import Client
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
 
-def llmClient():
+def llmClient(callback_manager=None):
     custom_client = Client()
 
     return ChatOpenAI(
+        callbacks=callback_manager,
         model=os.environ["MODEL"],
         base_url=os.environ["BASE_URL"],
         http_client=custom_client

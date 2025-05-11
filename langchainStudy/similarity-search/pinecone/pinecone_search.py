@@ -13,7 +13,7 @@ loader = TextLoader("../../resource/knowledge.txt",encoding="UTF-8")
 documents = loader.load()
 text_splitter = CharacterTextSplitter(chunk_size=1500, chunk_overlap=0)
 docs = text_splitter.split_documents(documents)
-embeddings = OpenAIEmbeddings()
+embeddings = embeddingClient()
 pinecone_api_key = os.environ.get("PINECONE_API_KEY")
 pc = Pinecone(api_key=pinecone_api_key)
 

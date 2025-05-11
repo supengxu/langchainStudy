@@ -6,11 +6,11 @@ from langchain_openai.embeddings import OpenAIEmbeddings
 with open("../../resource/knowledge.txt", encoding="utf-8") as f:
     knowledge = f.read()
 
-text_splitter = SemanticChunker(OpenAIEmbeddings())
+text_splitter = SemanticChunker(embeddingClient())
 
 #拆分的默认方式是基于百分位数。在此方法中，计算所有句子之间的差异，然后任何大于50%的差异都会被拆分。
 text_splitter = SemanticChunker(
-    OpenAIEmbeddings(), breakpoint_threshold_type="percentile"
+    embeddingClient(), breakpoint_threshold_type="percentile"
 )
 docs = text_splitter.create_documents([knowledge])
 print(docs[0].page_content)

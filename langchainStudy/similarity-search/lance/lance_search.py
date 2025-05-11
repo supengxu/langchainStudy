@@ -9,7 +9,7 @@ loader = TextLoader("../../resource/knowledge.txt", encoding="UTF-8")
 documents = loader.load()
 text_splitter = CharacterTextSplitter(chunk_size=1500, chunk_overlap=0)
 documents = text_splitter.split_documents(documents)
-embeddings = OpenAIEmbeddings()
+embeddings = embeddingClient()
 
 docsearch = LanceDB.from_documents(documents, embeddings)
 query = "Pixar公司是做什么的?"

@@ -12,7 +12,7 @@ loader = TextLoader("../../resource/knowledge.txt", encoding="UTF-8")
 documents = loader.load()
 text_splitter = CharacterTextSplitter(chunk_size=1500, chunk_overlap=0)
 docs = text_splitter.split_documents(documents)
-embeddings = OpenAIEmbeddings()
+embeddings = embeddingClient()
 db = FAISS.from_documents(docs, embeddings)
 query = "Pixar公司是做什么的?"
 #返回文档以及查询与它们之间的距离分数。返回的距离分数是 L2 距离。因此，得分越低越好。

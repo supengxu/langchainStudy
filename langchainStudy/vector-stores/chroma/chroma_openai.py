@@ -5,7 +5,7 @@ import chromadb
 from langchain_text_splitters import CharacterTextSplitter
 from langchain_community.document_loaders import TextLoader
 
-embeddings = OpenAIEmbeddings()
+embeddings = embeddingClient()
 persistent_client = chromadb.PersistentClient()
 new_client = chromadb.EphemeralClient()
 # 加载文档并将其分割成片段
