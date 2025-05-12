@@ -8,7 +8,9 @@ from langchain import hub
 # os.environ['FAISS_NO_AVX2'] = '1'
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains.retrieval import create_retrieval_chain
+from langchain.retrievers import EnsembleRetriever
 from langchain_community.document_loaders import TextLoader
+from langchain_community.retrievers import BM25Retriever
 from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import OpenAIEmbeddings
@@ -17,11 +19,14 @@ from langchain_text_splitters import CharacterTextSplitter
 from llm_basic.llm_client import embeddingClient, llmClient
 
 # 创建提示模板
-retrieval_qa_chat_prompt = hub.pull("langchain-ai/retrieval-qa-chat")
-
+prompt = ChatPromptTemplate.from_template("""仅根据提供的上下文回答以下问题你可以做润色总结,:
+<context>
+{context}
+</context>
+Question: {input}""")
 # 初始化 LLM 和 document chain
 llm = llmClient()
-document_chain = create_stuff_documents_chain(llm, retrieval_qa_chat_prompt)
+document_chain = create_stuff_documents_chain(llm, prompt)
 
 # 加载文档并进行分割
 loader = TextLoader("../../resource/knowledge.txt", encoding="UTF-8")
@@ -34,11 +39,25 @@ embeddings = embeddingClient()
 db = FAISS.from_documents(docs, embeddings)
 
 # 设置检索器
-retriever = db.as_retriever(
-    search_type="similarity_score_threshold",  # 使用相似度评分过滤
-    search_kwargs={"score_threshold": 0.5}     # 降低阈值以提高召回率
+
+# 创建关键词检索器
+bm25_retriever = BM25Retriever.from_documents(documents)
+bm25_retriever.k = 2  # 返回 top-2 的关键词匹配文档
+
+# 创建向量检索器
+vector_retriever = db.as_retriever(search_kwargs={"k": 2})  # 使用正确的变量名
+
+
+# 创建混合检索器
+hybrid_retriever = EnsembleRetriever(
+    retrievers=[bm25_retriever, vector_retriever],
+    weights=[0.5, 0.5]  # 权重各占一半
 )
-retrieval_chain = create_retrieval_chain(retriever, document_chain)
+retrieval_chain = create_retrieval_chain(hybrid_retriever, document_chain)
+# 执行混合查询
+query = "Pixar公司是做什么的?"
+results = hybrid_retriever.get_relevant_documents(query)
+print("Hybrid search results:", results)
 
 # 执行查询
 query = "Pixar是一家什么公司"
