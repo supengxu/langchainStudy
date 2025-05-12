@@ -6,6 +6,8 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 from langchain_openai import OpenAIEmbeddings
 
+from llm_basic.llm_client import llmClient, embeddingClient
+
 # 数据导入
 loader = TextLoader(".././resource/qa.txt", encoding="UTF-8")
 docs = loader.load()
@@ -33,5 +35,5 @@ from langchain.chains import create_retrieval_chain
 retriever = vector.as_retriever()
 retrieval_chain = create_retrieval_chain(retriever, document_chain)
 # 执行请求
-response = retrieval_chain.invoke({"input": "天气"})
+response = retrieval_chain.invoke({"input": "学习任务"})
 print(response["answer"])

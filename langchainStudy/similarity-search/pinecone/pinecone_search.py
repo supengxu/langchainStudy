@@ -8,6 +8,7 @@ import os
 import time
 from langchain_community.document_loaders import TextLoader
 
+from llm_basic.llm_client import embeddingClient
 
 loader = TextLoader("../../resource/knowledge.txt",encoding="UTF-8")
 documents = loader.load()
